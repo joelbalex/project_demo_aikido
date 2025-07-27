@@ -19,12 +19,16 @@ app.use(fileUpload());
 // Enable for Reverse proxy support
 // app.set('trust proxy', 1) 
 
+// Use Helmet to secure Express headers
+const helmet = require('helmet');
+app.use(helmet());
+
 // Intialize Session
 app.use(session({
-  secret: 'keyboard cat',
+  secret: process.env.SESSION_SECRET || 'defaultSecret',
   resave: true,
   saveUninitialized: true,
-  cookie: { secure: false }
+  cookie: { secure: true }
 }))
 
 // Initialize Passport
@@ -33,6 +37,10 @@ app.use(passport.session())
 
 // Initialize express-flash
 app.use(require('express-flash')());
+
+// CSRF protection
+const csurf = require('csurf');
+app.use(csurf());
 
 // Routing
 app.use('/app',require('./routes/app')())
