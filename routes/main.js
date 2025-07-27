@@ -1,6 +1,20 @@
 var router = require('express').Router()
 var vulnDict = require('../config/vulns')
 var authHandler = require('../core/authHandler')
+var rateLimit = require('express-rate-limit');
+
+// Define a rate limiter for login and expensive operations
+const loginLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 5, // limit each IP to 5 requests per windowMs
+	message: 'Too many login attempts from this IP, please try again after 15 minutes'
+});
+
+const generalLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // limit each IP to 100 requests per windowMs
+	message: 'Too many requests from this IP, please try again after 15 minutes'
+});
 
 module.exports = function (passport) {
 	router.get('/', authHandler.isAuthenticated, function (req, res) {
@@ -11,7 +25,7 @@ module.exports = function (passport) {
 		res.render('login')
 	})
 
-	router.get('/learn/vulnerability/:vuln', authHandler.isAuthenticated, function (req, res) {
+	router.get('/learn/vulnerability/:vuln', authHandler.isAuthenticated, generalLimiter, function (req, res) {
 		res.render('vulnerabilities/layout', {
 			vuln: req.params.vuln,
 			vuln_title: vulnDict[req.params.vuln],
@@ -48,7 +62,7 @@ module.exports = function (passport) {
 
 	router.get('/resetpw', authHandler.resetPw)
 
-	router.post('/login', passport.authenticate('login', {
+	router.post('/login', loginLimiter, passport.authenticate('login', {
 		successRedirect: '/learn',
 		failureRedirect: '/login',
 		failureFlash: true

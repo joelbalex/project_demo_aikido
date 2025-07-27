@@ -1,6 +1,6 @@
 var db = require('../models')
 var bCrypt = require('bcrypt')
-var md5 = require('md5')
+var crypto = require('crypto') // Change from md5 to crypto for secure hashing
 
 module.exports.isAuthenticated = function (req, res, next) {
 	if (req.isAuthenticated()) {
@@ -46,7 +46,8 @@ module.exports.resetPw = function (req, res) {
 			}
 		}).then(user => {
 			if (user) {
-				if (req.query.token == md5(req.query.login)) {
+				const token = crypto.createHash('sha256').update(req.query.login).digest('hex'); // Secure hashing
+				if (req.query.token == token) {
 					res.render('resetpw', {
 						login: req.query.login,
 						token: req.query.token
@@ -75,7 +76,8 @@ module.exports.resetPwSubmit = function (req, res) {
 				}
 			}).then(user => {
 				if (user) {
-					if (req.body.token == md5(req.body.login)) {
+					const token = crypto.createHash('sha256').update(req.body.login).digest('hex'); // Secure hashing
+					if (req.body.token == token) {
 						user.password = bCrypt.hashSync(req.body.password, bCrypt.genSaltSync(10), null)
 						user.save().then(function () {
 							req.flash('success', "Passowrd successfully reset")
