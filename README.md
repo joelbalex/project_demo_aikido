@@ -36,10 +36,7 @@ docker run --name dvna -p 9090:9090 -d appsecco/dvna:sqlite
 Access the application at [http://127.0.0.1:9090/](http://127.0.0.1:9090/)
 
 
-MYSQL_USER=dvna
-MYSQL_DATABASE=dvna
-MYSQL_PASSWORD=passw0rd
-MYSQL_RANDOM_ROOT_PASSWORD=yes
+
 ```
 
 Start the application and database using `docker-compose`
