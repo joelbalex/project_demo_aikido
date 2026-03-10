@@ -35,27 +35,7 @@ docker run --name dvna -p 9090:9090 -d appsecco/dvna:sqlite
 
 Access the application at [http://127.0.0.1:9090/](http://127.0.0.1:9090/)
 
-## Getting Started
 
-DVNA can be deployed in three ways
-
-1. For Developers, using docker-compose with auto-reload on code updates
-2. For Security Testers, using the Official image from Docker Hub
-3. For Advanced Users, using a fully manual setup
-
-Detailed instructions on setup and requirements are given in the Guide Gitbook
-
-### 1. Development Setup
-
-Clone this repository
-
-```bash
-git clone https://github.com/appsecco/dvna; cd dvna
-```
-
-Create a `vars.env` with the desired database configuration
-
-```bash
 MYSQL_USER=dvna
 MYSQL_DATABASE=dvna
 MYSQL_PASSWORD=passw0rd
